@@ -1,0 +1,7 @@
+load 'pieces/in_bounds.rb'
+load 'board.rb'
+load 'display.rb'
+load 'piece.rb'
+load 'player.rb'
+load 'game.rb'
+load 'pieces/manifest.rb'

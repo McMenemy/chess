@@ -1,7 +1,6 @@
 class NullPiece < Piece
-
-  def initialize(pos)
+  def initialize(pos, board, color = :blue)
+    super(pos, board, color)
     @show = " "
-    super(pos)
   end
 end

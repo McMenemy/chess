@@ -3,7 +3,7 @@ require 'io/console'
 require_relative 'board.rb'
 
 class Display
-
+  attr_accessor :selected
   attr_reader :cursor
 
   def initialize(board)
@@ -13,19 +13,24 @@ class Display
   end
 
   def get_input
+    STDIN.iflush
     STDIN.echo = false
     STDIN.raw!
 
     char = STDIN.getc
     case char
     when "w" || "\e[A" # up arrow
-      input = [1, 0]
-    when "s" || "\e[B" # down arrow
       input = [-1, 0]
+      p input
+    when "s" || "\e[B" # down arrow
+      input = [1, 0]
     when "a" || "\e[D" # left arrow
       input = [0, -1]
     when "d" || "\e[C" # right arrow
       input = [0, 1]
+    when 'q'
+      input = 'selected'
+
     end
 
     STDIN.echo = true
@@ -36,6 +41,10 @@ class Display
 
   def move_cursor
     input = get_input
+    if input == 'selected'
+      @selected = !@selected
+      return @cursor
+    end
     new_row = @cursor[0] + input[0]
     new_col = @cursor[1] + input[1]
 
@@ -47,23 +56,20 @@ class Display
     # more color options https://github.com/fazibear/colorize/blob/master/lib/colorize/class_methods.rb
     (0...8).each do |row|
       (0...8).each do |col|
-        piece = " " # @board[row, col].show
+        piece = @board[row, col]
         if [row, col] == @cursor
-          print " #{piece} ".colorize(:red).on_red
-        elsif (row + col).even?
-          print " #{piece} ".colorize(:light_white).on_light_white
+          print "#{piece.show} ".colorize(piece.color).on_red
+        elsif (row + col).even? && piece
+          print "#{piece.show} ".colorize(piece.color).on_light_green
         else
-          print " #{piece} ".colorize(:light_black).light_black
+          print "#{piece.show} ".colorize(piece.color).on_blue
         end
       end
       puts "\n"
     end
   end
 
-  def in_bounds?(coord)
-    row_in_bound = coord[0] < 8 && coord[0] >= 0
-    col_in_bound = coord[1] < 8 && coord[1] >= 0
-
-    row_in_bound && col_in_bound
+  def in_bounds?(coordinate)
+    @board.in_bounds?(coordinate)
   end
 end
