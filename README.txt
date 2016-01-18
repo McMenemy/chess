@@ -1,3 +1,3 @@
-# Ruby Terminal Chess App
+# Terminal Chess App
 
-Ruby terminal chess app built at App Academy (partially completed).
+Terminal chess app built using ruby at App Academy (partially completed).
