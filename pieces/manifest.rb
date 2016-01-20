@@ -1,6 +1,5 @@
-load 'in_bounds.rb'
-load 'stepping_move.rb'
-load 'sliding.rb'
+load 'movement_patterns/stepping_move.rb'
+load 'movement_patterns/sliding.rb'
 load 'bishop.rb'
 load 'king.rb'
 load 'queen.rb'

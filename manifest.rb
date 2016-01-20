@@ -1,4 +1,3 @@
-load 'pieces/in_bounds.rb'
 load 'board.rb'
 load 'display.rb'
 load 'piece.rb'
