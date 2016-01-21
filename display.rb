@@ -30,7 +30,6 @@ class Display
       input = [0, 1]
     when 'q'
       input = 'selected'
-
     end
 
     STDIN.echo = true
@@ -58,11 +57,11 @@ class Display
       (0...8).each do |col|
         piece = @board[row, col]
         if [row, col] == @cursor
-          print "#{piece.show} ".colorize(piece.color).on_red
+          print "#{piece.show}".colorize(piece.color).on_red
         elsif (row + col).even? && piece
-          print "#{piece.show} ".colorize(piece.color).on_light_green
+          print "#{piece.show}".colorize(piece.color).on_light_green
         else
-          print "#{piece.show} ".colorize(piece.color).on_blue
+          print "#{piece.show}".colorize(piece.color).on_blue
         end
       end
       puts "\n"
