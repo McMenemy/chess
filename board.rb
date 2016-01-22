@@ -55,19 +55,25 @@ class Board
     self[*end_pos] = start_piece
     self[*start] = NullPiece.new([*start], self)
   end
-
-  def [](row, col)
-    @board[row][col]
+  
+  def in_check?
+    
   end
-
-  def []=(row, col, piece)
-    @board[row][col] = piece
-  end
-
+  
   def in_bounds?(coord)
     row_in_bound = coord[0] < 8 && coord[0] >= 0
     col_in_bound = coord[1] < 8 && coord[1] >= 0
 
     row_in_bound && col_in_bound
   end
+
+  def [](row, col)
+    self.board[row][col]
+  end
+
+  def []=(row, col, piece)
+    self.board[row][col] = piece
+  end
+
+
 end
