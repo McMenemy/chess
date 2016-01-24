@@ -1,6 +1,8 @@
 require_relative "piece.rb"
 
 class Board
+  attr_accessor :board
+  
   def initialize
     @board = Array.new(8) { Array.new(8) }
     populate
@@ -57,7 +59,10 @@ class Board
   end
   
   def king_pos(color)
-    # logic to find position of color king
+    each_tile do |row, col|
+      piece = self[row, col]
+      return [row, col] if piece.is_a?(King) && piece.color == color
+    end
   end
   
   def in_check?(color)
