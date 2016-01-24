@@ -56,9 +56,20 @@ class Board
     self[*start] = NullPiece.new([*start], self)
   end
   
-  def in_check?
-    
+  def king_pos(color)
+    # logic to find position of color king
   end
+  
+  def in_check?(color)
+    king_pos = king_pos(color)
+    
+    each_tile do |row, col|
+      piece = self[row, col]
+      if piece.other_color?(color)
+        # logic to see if king_pos is in a valid move of piece
+      end 
+    end
+  end        
   
   def in_bounds?(coord)
     row_in_bound = coord[0] < 8 && coord[0] >= 0
