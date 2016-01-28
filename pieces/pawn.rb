@@ -24,8 +24,6 @@ class Pawn < Piece
   def possible_moves
     moves = []
     deltas.each do |move|
-      p pos
-      p move
       moves << [pos[0] + move[0], pos[1] + move[1]] if valid_move?(move)
     end
     moves
@@ -35,7 +33,7 @@ class Pawn < Piece
     new_pos = [pos[0] + move[0], pos[1] + move[1]]
     return true if move == deltas[0] && board[*new_pos].is_a?(NullPiece)
     return true if can_move_two?(move, new_pos)
-    if move == deltas[2] || move == deltas[1]
+    if in_bounds?(new_pos) && (move == deltas[2] || move == deltas[1])
       return true if other_color?(board[*new_pos].color)
     end
     false

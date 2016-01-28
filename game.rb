@@ -22,6 +22,7 @@ class Game
     until game_over?
       take_turn(self.current_player)
       switch_player
+      p "in check?: #{self.board.in_check?(:white)}"
       self.turn_count += 1
     end
     p 'game over'

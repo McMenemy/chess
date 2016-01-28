@@ -71,9 +71,10 @@ class Board
     each_tile do |row, col|
       piece = self[row, col]
       if piece.other_color?(color)
-        # logic to see if king_pos is in a valid move of piece
+        return true if piece.possible_moves.include?(king_pos)
       end 
     end
+    false
   end        
   
   def in_bounds?(coord)
