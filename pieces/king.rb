@@ -20,6 +20,14 @@ class King < Piece
               [-1, 0]
             ]
   
-    total_moves(deltas)
+    possible_moves_exluding_check = total_moves(deltas)
+    # safe_moves = []
+    
+    # possible_moves_exluding_check.each do |move|
+    #   safe_moves << move unless self.board.in_check?(self.color, move)
+    # end
+    
+    # safe_moves
   end
+  
 end

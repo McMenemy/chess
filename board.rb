@@ -65,17 +65,23 @@ class Board
     end
   end
   
-  def in_check?(color)
-    king_pos = king_pos(color)
+  def in_check?(color, king_pos = nil)
+    king_pos ||= king_pos(color)
     
     each_tile do |row, col|
       piece = self[row, col]
-      if piece.other_color?(color)
-        return true if piece.possible_moves.include?(king_pos)
+      if piece.pos != king_pos && piece.other_color?(color) 
+        return true if piece.possible_moves.include?(king_pos) 
       end 
     end
     false
   end        
+  
+  def check_mate?(color)
+    king = self[*king_pos(color)]
+    
+    in_check?(color) && king.possible_moves.empty? ? true : false
+  end
   
   def in_bounds?(coord)
     row_in_bound = coord[0] < 8 && coord[0] >= 0
