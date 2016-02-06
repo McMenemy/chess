@@ -78,9 +78,27 @@ class Board
   end        
   
   def check_mate?(color)
-    king = self[*king_pos(color)]
+    king_pos = king_pos(color)
+    king = self[*king_pos]
+    safe_moves = []
     
-    in_check?(color) && king.possible_moves.empty? ? true : false
+    king.possible_moves.each do |end_move|
+      test_board = self.dup
+      test_board.move(king_pos, end_move)
+      safe_moves << end_move unless test_board.in_check?(color)
+    end
+      
+    in_check?(color) && safe_moves.empty? ? true : false
+  end
+  
+  def dup
+    temp_board = Board.new
+    
+    self.each_tile do |row, col|
+      temp_board[row, col] = self[row, col]
+    end
+    
+    temp_board
   end
   
   def in_bounds?(coord)
