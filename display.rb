@@ -3,13 +3,13 @@ require 'io/console'
 require_relative 'board.rb'
 
 class Display
-  attr_accessor :selected
-  attr_reader :cursor
+  attr_accessor :selected, :quit, :board, :cursor
 
   def initialize(board)
     @cursor = [0, 0]
     @selected = false
     @board = board
+    @quit = false
   end
 
   def get_input
@@ -18,18 +18,20 @@ class Display
     STDIN.raw!
 
     char = STDIN.getc
-    case char
-    when "w" || "\e[A" # up arrow
+    if char == "w" || char == "\e[A" # up arrow
       input = [-1, 0]
-      p input
-    when "s" || "\e[B" # down arrow
+    elsif char == "s" || char == "\e[B" # down arrow
       input = [1, 0]
-    when "a" || "\e[D" # left arrow
+    elsif char == "a" || char == "\e[D" # left arrow
       input = [0, -1]
-    when "d" || "\e[C" # right arrow
+    elsif char == "d" || char == "\e[C" # right arrow
       input = [0, 1]
-    when 'q'
+    elsif char == 'q' || char ==  '^m' # enter
       input = 'selected'
+    elsif char == 'e'
+      raise 'Game aborted'
+    else
+      input = 'try again'
     end
 
     STDIN.echo = true
@@ -40,23 +42,37 @@ class Display
 
   def move_cursor
     input = get_input
-    if input == 'selected'
-      @selected = !@selected
-      return @cursor
+    
+    if input == 'quit'
+      self.quit = true
+      return self.cursor
     end
-    new_row = @cursor[0] + input[0]
-    new_col = @cursor[1] + input[1]
+    
+    if input == 'try again'
+      return self.cursor
+    end
+      
+    if input == 'selected'
+      self.selected = !self.selected
+      return self.cursor
+    end
+    p "cursor: #{self.cursor}"
+    p 'here'
+    p "input:"
+    p input
+    new_row = self.cursor[0] + input[0]
+    new_col = self.cursor[1] + input[1]
 
     new_pos = [new_row, new_col]
-    @cursor = new_pos if in_bounds?(new_pos)
+    self.cursor = new_pos if in_bounds?(new_pos)
   end
 
   def render_board
     # more color options https://github.com/fazibear/colorize/blob/master/lib/colorize/class_methods.rb
     (0...8).each do |row|
       (0...8).each do |col|
-        piece = @board[row, col]
-        if [row, col] == @cursor
+        piece = self.board[row, col]
+        if [row, col] == self.cursor
           print "#{piece.show}".colorize(piece.color).on_red
         elsif (row + col).even? && piece
           print "#{piece.show}".colorize(piece.color).on_light_green
@@ -69,6 +85,6 @@ class Display
   end
 
   def in_bounds?(coordinate)
-    @board.in_bounds?(coordinate)
+    self.board.in_bounds?(coordinate)
   end
 end

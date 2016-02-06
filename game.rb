@@ -5,7 +5,7 @@ require_relative 'player'
 class Game
 
   attr_reader :player1, :player2, :board, :display
-  attr_accessor :current_player, :turn_count
+  attr_accessor :current_player, :turn_count, :quit
 
   def initialize()
     @board = Board.new
@@ -14,6 +14,7 @@ class Game
     @player2 = Player.new(:black)
     @current_player = @player1
     @turn_count = 0 # temp variable for testing
+    @quit = false
     
     play
   end
@@ -30,7 +31,7 @@ class Game
   end
   
   def game_over?
-    self.turn_count > 5 ? true : false
+    self.quit || self.turn_count > 50 ? true : false
   end
   
   def switch_player
@@ -42,7 +43,14 @@ class Game
   end
 
   def take_turn(player1)
-    until self.display.selected
+    if self.display.quit
+      p 'quit at game level'
+      raise error
+      self.quit = true
+      return
+    end
+      
+    until self.display.selected || self.display.quit
       self.display.move_cursor
       system("clear")
       self.display.render_board
@@ -51,7 +59,7 @@ class Game
     start_pos = self.display.cursor
     puts "piece at #{start_pos} selected"
 
-    while self.display.selected
+    while self.display.selected && !self.display.quit
       self.display.move_cursor
       system("clear")
       self.display.render_board
@@ -60,5 +68,5 @@ class Game
     end_pos = self.display.cursor
     self.board.move(start_pos, end_pos)
   end
-
+    
 end

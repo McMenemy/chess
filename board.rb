@@ -87,7 +87,7 @@ class Board
       test_board.move(king_pos, end_move)
       safe_moves << end_move unless test_board.in_check?(color)
     end
-      
+    p safe_moves.to_s
     in_check?(color) && safe_moves.empty? ? true : false
   end
   
