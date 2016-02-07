@@ -3,13 +3,11 @@ require 'io/console'
 require_relative 'board.rb'
 
 class Display
-  attr_accessor :selected, :quit, :board, :cursor
+  attr_accessor :board, :cursor 
 
   def initialize(board)
     @cursor = [0, 0]
-    @selected = false
     @board = board
-    @quit = false
   end
 
   def get_input
@@ -18,18 +16,18 @@ class Display
     STDIN.raw!
 
     char = STDIN.getc
-    if char == "w" || char == "\e[A" # up arrow
+    if char == "w"
       input = [-1, 0]
-    elsif char == "s" || char == "\e[B" # down arrow
+    elsif char == "s"
       input = [1, 0]
-    elsif char == "a" || char == "\e[D" # left arrow
+    elsif char == "a"
       input = [0, -1]
-    elsif char == "d" || char == "\e[C" # right arrow
+    elsif char == "d"
       input = [0, 1]
-    elsif char == 'q' || char ==  '^m' # enter
+    elsif char == 'q'
       input = 'selected'
     elsif char == 'e'
-      raise 'Game aborted'
+      input = 'exit program'
     else
       input = 'try again'
     end
@@ -40,33 +38,22 @@ class Display
     input
   end
 
-  def move_cursor
-    input = get_input
-    
-    if input == 'quit'
-      self.quit = true
-      return self.cursor
-    end
-    
-    if input == 'try again'
-      return self.cursor
-    end
-      
-    if input == 'selected'
-      self.selected = !self.selected
-      return self.cursor
-    end
-    p "cursor: #{self.cursor}"
-    p 'here'
-    p "input:"
-    p input
-    new_row = self.cursor[0] + input[0]
-    new_col = self.cursor[1] + input[1]
-
-    new_pos = [new_row, new_col]
-    self.cursor = new_pos if in_bounds?(new_pos)
+  def move_cursor(input)
+    new_row = wrap_cursor(self.cursor[0] + input[0])
+    new_col = wrap_cursor(self.cursor[1] + input[1])
+    self.cursor = [new_row, new_col]
   end
-
+  
+  def wrap_cursor(row_col) # works in pry
+    if row_col > 7
+      return row_col - 8
+    elsif row_col < 0
+      return row_col + 8
+    else
+      return row_col
+    end
+  end
+  
   def render_board
     # more color options https://github.com/fazibear/colorize/blob/master/lib/colorize/class_methods.rb
     (0...8).each do |row|
@@ -84,7 +71,4 @@ class Display
     end
   end
 
-  def in_bounds?(coordinate)
-    self.board.in_bounds?(coordinate)
-  end
 end
