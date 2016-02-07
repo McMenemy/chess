@@ -16,7 +16,7 @@ class Game
     @turn_count = 0 # temp variable for testing
     @quit = false
 
-    # play
+    play
   end
 
   def play
@@ -24,8 +24,8 @@ class Game
     
     until game_over?
       take_turn(self.current_player)
-      # p "in check?: #{self.board.in_check?(:white)}"
-      # p "check_mate?: #{self.board.check_mate?(:white)}"
+      p "in check?: #{self.board.in_check?(:white)}"
+      p "check_mate?: #{self.board.check_mate?(:white)}"
       self.turn_count += 1
     end
     p 'game over'
@@ -47,29 +47,37 @@ class Game
     input = self.display.cursor
       
     while move_input?(input)
-      input = self.display.get_input
+      input = get_input
       self.display.move_cursor(input) if move_input?(input)
       system("clear")
       self.display.render_board
     end
 
+    
     start_pos = self.display.cursor
     
     if valid_selection?(start_pos)
+      system("clear")
+      self.display.redner_board_with_path(self.board[*start_pos].possible_moves)
       input = self.display.cursor
       
       while move_input?(input)
-        input = self.display.get_input
+        input = get_input
         self.display.move_cursor(input) if move_input?(input)
         system("clear")
-        self.display.render_board
+        self.display.redner_board_with_path(self.board[*start_pos].possible_moves)
       end
         
       end_pos = self.display.cursor
-      self.board.move(start_pos, end_pos)
-      system("clear")
-      self.display.render_board
-      switch_player
+      
+      if self.board.move(start_pos, end_pos) == 'invalid move'
+        puts 'Invalid move.'
+        puts 'Reselect a piece and try a different move'
+      else
+        system("clear")
+        self.display.render_board
+        switch_player
+      end
     end
   end
   
@@ -89,7 +97,7 @@ class Game
       return false
     elsif input == 'try again'
       puts 'Invalid selection: '
-      puts '  * Use wsad to move curse'
+      puts '  * Use wsad to move cursors'
       puts '  * Press q to select a piece'
       puts '  * Press e to exit program'
       return false
@@ -99,6 +107,34 @@ class Game
     else
       return true
     end
+  end
+  
+  def get_input
+    STDIN.iflush
+    STDIN.echo = false
+    STDIN.raw!
+
+    char = STDIN.getc
+    if char == "w"
+      input = [-1, 0]
+    elsif char == "s"
+      input = [1, 0]
+    elsif char == "a"
+      input = [0, -1]
+    elsif char == "d"
+      input = [0, 1]
+    elsif char == 'q'
+      input = 'selected'
+    elsif char == 'e'
+      input = 'exit program'
+    else
+      input = 'try again'
+    end
+
+    STDIN.echo = true
+    STDIN.cooked!
+
+    input
   end
 
 end

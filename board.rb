@@ -49,13 +49,20 @@ class Board
     end
   end
 
-  def move(start, end_pos)
-    start_piece = self[*start]
-    raise NullPieceError if start_piece.is_a?(NullPiece)
-    raise InvalidMoveError if !(start_piece.possible_moves.include?(end_pos))
+  def move(start_pos, end_pos)
+    start_piece = self[*start_pos]
+    
+    unless valid_move?(start_piece, end_pos)
+      return 'invalid move'
+    end
+    
     start_piece.pos = end_pos
     self[*end_pos] = start_piece
-    self[*start] = NullPiece.new([*start], self)
+    self[*start_pos] = NullPiece.new([*start_pos], self)
+  end
+  
+  def valid_move?(start_piece, end_pos)
+    start_piece.possible_moves.include?(end_pos)
   end
   
   def king_pos(color)
@@ -78,24 +85,31 @@ class Board
   end        
   
   def check_mate?(color)
-    king_pos = king_pos(color)
-    king = self[*king_pos]
-    safe_moves = []
-    
-    king.possible_moves.each do |end_move|
-      test_board = self.dup
-      test_board.move(king_pos, end_move)
-      safe_moves << end_move unless test_board.in_check?(color)
+    self.each_tile do |row, col|
+      pos = [row, col]
+      piece = self[*pos]
+      return false if (piece.color == color && prevent_check?(piece, pos, color))
     end
-    p safe_moves.to_s
-    in_check?(color) && safe_moves.empty? ? true : false
+    
+    true
+  end
+  
+  def prevent_check?(piece, start_pos, color)
+    piece.possible_moves.each do |end_move|
+      test_board = self.dup
+      test_board.move(start_pos, end_move)
+      return true unless test_board.in_check?(color)
+    end
+    
+    false
   end
   
   def dup
     temp_board = Board.new
     
     self.each_tile do |row, col|
-      temp_board[row, col] = self[row, col]
+      piece = self[row, col].clone
+      temp_board[row, col] = piece
     end
     
     temp_board
