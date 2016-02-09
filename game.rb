@@ -60,14 +60,14 @@ class Game
     
     if valid_selection?(start_pos)
       system("clear")
-      self.display.redner_board_with_path(self.board[*start_pos].possible_moves)
+      self.display.render_board(self.board[*start_pos].possible_moves)
       input = self.display.cursor
       
       while move_input?(input)
         input = get_input
         self.display.move_cursor(input) if move_input?(input)
         system("clear")
-        self.display.redner_board_with_path(self.board[*start_pos].possible_moves)
+        self.display.render_board(self.board[*start_pos].possible_moves)
       end
         
       end_pos = self.display.cursor

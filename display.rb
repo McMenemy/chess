@@ -26,24 +26,7 @@ class Display
     end
   end
   
-  def render_board
-    # more color options https://github.com/fazibear/colorize/blob/master/lib/colorize/class_methods.rb
-    (0...8).each do |row|
-      (0...8).each do |col|
-        piece = self.board[row, col]
-        if [row, col] == self.cursor
-          print "#{piece.show}".colorize(piece.color).on_red
-        elsif (row + col).even? && piece
-          print "#{piece.show}".colorize(piece.color).on_light_green
-        else
-          print "#{piece.show}".colorize(piece.color).on_blue
-        end
-      end
-      puts "\n"
-    end
-  end
-  
-  def redner_board_with_path(valid_moves) # works in pry
+  def render_board(valid_moves = [])
     # more color options https://github.com/fazibear/colorize/blob/master/lib/colorize/class_methods.rb
     (0...8).each do |row|
       (0...8).each do |col|
