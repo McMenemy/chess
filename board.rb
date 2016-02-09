@@ -1,7 +1,7 @@
 require_relative "piece.rb"
 
 class Board
-  attr_accessor :board
+  attr_accessor :board, :test_board
   
   def initialize
     @board = Array.new(8) { Array.new(8) }
@@ -96,9 +96,12 @@ class Board
   
   def prevent_check?(piece, start_pos, color)
     piece.possible_moves.each do |end_move|
-      test_board = self.dup
-      test_board.move(start_pos, end_move)
-      return true unless test_board.in_check?(color)
+      @test_board = self.dup
+      @test_board.move(start_pos, end_move)
+      unless test_board.in_check?(color)
+        p "#{piece.class}: #{start_pos}, #{end_move}"
+        return true
+      end
     end
     
     false
@@ -108,8 +111,9 @@ class Board
     temp_board = Board.new
     
     self.each_tile do |row, col|
-      piece = self[row, col].clone
-      temp_board[row, col] = piece
+      piece = self[row, col]
+      new_piece = piece.class.new(piece.pos, temp_board, piece.color)
+      temp_board[row, col] = new_piece
     end
     
     temp_board
