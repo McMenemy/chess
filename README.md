@@ -1,6 +1,6 @@
 # Terminal Chess App
 
-Terminal chess game built using ruby. 
+Terminal chess game built using ruby that enforces valid moves (including check and checkmate logic) and highlights possible moves of selected piece.
 
 Directions to get game started:
   1. open terminal
