@@ -2,7 +2,7 @@ require_relative "piece.rb"
 
 class Board
   attr_accessor :board, :test_board
-  
+
   def initialize
     @board = Array.new(8) { Array.new(8) }
     populate
@@ -51,74 +51,80 @@ class Board
 
   def move(start_pos, end_pos)
     start_piece = self[*start_pos]
-    
+
     unless valid_move?(start_piece, end_pos)
       return 'invalid move'
     end
-    
+
     start_piece.pos = end_pos
     self[*end_pos] = start_piece
     self[*start_pos] = NullPiece.new([*start_pos], self)
   end
-  
+
+  def in_check_after?(start_pos, end_pos)
+    color = self[*start_pos].color
+    @test_board = self.dup
+    @test_board.move(start_pos, end_pos)
+    test_board.in_check?(color)
+  end
+
   def valid_move?(start_piece, end_pos)
     start_piece.possible_moves.include?(end_pos)
   end
-  
+
   def king_pos(color)
     each_tile do |row, col|
       piece = self[row, col]
       return [row, col] if piece.is_a?(King) && piece.color == color
     end
   end
-  
+
   def in_check?(color, king_pos = nil)
     king_pos ||= king_pos(color)
-    
+
     each_tile do |row, col|
       piece = self[row, col]
-      if piece.pos != king_pos && piece.other_color?(color) 
-        return true if piece.possible_moves.include?(king_pos) 
-      end 
+      if piece.pos != king_pos && piece.other_color?(color)
+        return true if piece.possible_moves.include?(king_pos)
+      end
     end
     false
-  end        
-  
+  end
+
   def check_mate?(color)
     self.each_tile do |row, col|
       pos = [row, col]
       piece = self[*pos]
       return false if (piece.color == color && prevent_check?(piece, pos, color))
     end
-    
+
     true
   end
-  
+
   def prevent_check?(piece, start_pos, color)
     piece.possible_moves.each do |end_move|
       @test_board = self.dup
       @test_board.move(start_pos, end_move)
       unless test_board.in_check?(color)
-        p "#{piece.class}: #{start_pos}, #{end_move}"
         return true
       end
     end
-    
+
     false
   end
-  
+
   def dup
     temp_board = Board.new
-    
+
     self.each_tile do |row, col|
       piece = self[row, col]
       new_piece = piece.class.new(piece.pos, temp_board, piece.color)
       temp_board[row, col] = new_piece
     end
-    
+
     temp_board
   end
-  
+
   def in_bounds?(coord)
     row_in_bound = coord[0] < 8 && coord[0] >= 0
     col_in_bound = coord[1] < 8 && coord[1] >= 0

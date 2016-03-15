@@ -3,7 +3,7 @@ require 'io/console'
 require_relative 'board.rb'
 
 class Display
-  attr_accessor :board, :cursor 
+  attr_accessor :board, :cursor
 
   def initialize(board)
     @cursor = [0, 0]
@@ -15,7 +15,7 @@ class Display
     new_col = wrap_cursor(self.cursor[1] + input[1])
     self.cursor = [new_row, new_col]
   end
-  
+
   def wrap_cursor(row_col) # works in pry
     if row_col > 7
       return row_col - 8
@@ -25,20 +25,20 @@ class Display
       return row_col
     end
   end
-  
+
   def render_board(valid_moves = [])
     # more color options https://github.com/fazibear/colorize/blob/master/lib/colorize/class_methods.rb
     (0...8).each do |row|
       (0...8).each do |col|
         piece = self.board[row, col]
         if [row, col] == self.cursor
-          print "#{piece.show}".colorize(piece.color).on_red
+          print " #{piece.show} ".colorize(piece.color).on_red
         elsif valid_moves.include?([row, col])
-          print "#{piece.show}".colorize(piece.color).on_magenta
+          print " #{piece.show} ".colorize(piece.color).on_magenta
         elsif (row + col).even? && piece
-          print "#{piece.show}".colorize(piece.color).on_light_green
+          print " #{piece.show} ".colorize(piece.color).on_light_green
         else
-          print "#{piece.show}".colorize(piece.color).on_blue
+          print " #{piece.show} ".colorize(piece.color).on_blue
         end
       end
       puts "\n"
