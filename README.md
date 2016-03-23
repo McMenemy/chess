@@ -7,7 +7,7 @@ Directions to get game started:
   2. download repository and navigate to directory
   3. in the terminal type: ruby play_game.rb
 
-![Demo](chess.gif)
+![Demo](chess2.gif)
 
 Future features that are not yet implemented:
   * pawn promotion
