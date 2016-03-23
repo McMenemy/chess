@@ -7,7 +7,7 @@ Directions to get game started:
   2. download repository and navigate to directory
   3. in the terminal type: ruby play_game.rb
 
-![Demo](http://makeagif.com/JweG1T)
+![Demo](http://cdn.makeagif.com/media/3-23-2016/JweG1T.gif)
 
 Future features that are not yet implemented:
   * pawn promotion
